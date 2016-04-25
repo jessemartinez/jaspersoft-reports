@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
+<!-- 2016-04-17T21:46:39 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sample" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5be5b01d-525f-477a-adeb-30d93fa521ff">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="omca-digocean.xml"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="where_clause" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[(($P{csid}==null || ($P{csid}.length()==0))?"":" AND hierarchy.name = '"+$P{csid}+"'")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tenantid" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["35"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="csid" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["3943f8f2-54f3-4400-8687"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+acquisitions_common."originalobjectpurchasepricevalue" AS acquisitions_common_originalobjectpurchasepricevalue,
+acquisitions_common."transferoftitlenumber" AS acquisitions_common_transferoftitlenumber,
+acquisitions_common."acquisitionreferencenumber" AS acquisitions_common_acquisitionreferencenumber,
+acquisitions_common."acquisitionmethod" AS acquisitions_common_acquisitionmethod,
+acquisitions_common."acquisitionauthorizerdate" AS acquisitions_common_acquisitionauthorizerdate,
+acquisitions_common."acquisitionauthorizer" AS acquisitions_common_acquisitionauthorizer,
+acquisitions_common."acquisitionreason" AS acquisitions_common_acquisitionreason
+FROM
+"public"."acquisitions_common" acquisitions_common
+INNER JOIN "public"."hierarchy" hierarchy ON acquisitions_common."id" = hierarchy."id"
+INNER JOIN "public"."collectionspace_core" core ON acquisitions_common."id" = core."id"
+INNER JOIN "public"."misc" misc ON misc."id" = hierarchy."id"
+WHERE core.tenantid = $P{tenantid} AND misc.lifecyclestate != 'deleted'
+$P!{where_clause}
+ORDER BY acquisitionreferencenumber ASC]]>
+	</queryString>
+	<field name="acquisitions_common_originalobjectpurchasepricevalue" class="java.lang.Double"/>
+	<field name="acquisitions_common_transferoftitlenumber" class="java.lang.String"/>
+	<field name="acquisitions_common_acquisitionreferencenumber" class="java.lang.String"/>
+	<field name="acquisitions_common_acquisitionmethod" class="java.lang.String"/>
+	<field name="acquisitions_common_acquisitionauthorizerdate" class="java.sql.Timestamp"/>
+	<field name="acquisitions_common_acquisitionauthorizer" class="java.lang.String"/>
+	<field name="acquisitions_common_acquisitionreason" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="4" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="66" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="7" width="240" height="20" uuid="dab9bcb1-9640-4154-8507-47dcc095fae3"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[OMCA Acquisitions report]]></text>
+			</staticText>
+			<textField pattern="HH:mm">
+				<reportElement x="510" y="10" width="40" height="24" uuid="c83b7a3c-b20a-4127-9309-2a2ed66ff61a"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="430" y="10" width="80" height="24" uuid="64f0db6b-ad5c-41fc-97da-931030dd3d40"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="40" width="549" height="1" uuid="be00745f-83ab-4fd1-b1a2-441b017b8444"/>
+			</line>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement x="230" y="0" width="100" height="20" uuid="edee5f4f-ca96-42dd-b99c-b388594af74d"/>
+				<text><![CDATA[reason]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="0" width="100" height="20" uuid="6987652d-11f9-4abd-830c-cfb21ebaad08"/>
+				<text><![CDATA[reference number]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="130" y="0" width="100" height="20" uuid="d00b7072-4aa0-4491-adc6-5953f9a1de57"/>
+				<text><![CDATA[method]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="0" width="100" height="20" uuid="d4bbb948-6768-459b-afc2-96526b13fcc0"/>
+				<text><![CDATA[authorizer]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="430" y="0" width="100" height="20" uuid="485a694d-6279-4155-922a-bcb7b27d6e87"/>
+				<text><![CDATA[authorizer date]]></text>
+			</staticText>
+			<line>
+				<reportElement x="7" y="25" width="553" height="1" uuid="34c40588-0322-4f70-af35-295e146c9395"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="35" splitType="Stretch">
+			<textField evaluationTime="Auto" isBlankWhenNull="true">
+				<reportElement x="230" y="0" width="100" height="30" uuid="acc8a5bd-065b-4b21-8326-aebf26845ff2"/>
+				<textFieldExpression><![CDATA[$F{acquisitions_common_acquisitionreason}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Auto" isBlankWhenNull="true">
+				<reportElement x="30" y="0" width="100" height="30" uuid="eb9592ab-dacd-4b16-a4fd-d6061890dac9"/>
+				<textFieldExpression><![CDATA[$F{acquisitions_common_acquisitionreferencenumber}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Auto" isBlankWhenNull="true">
+				<reportElement x="130" y="0" width="100" height="30" uuid="36bf11d6-0d8b-488f-a88b-c7882a4437b9"/>
+				<textFieldExpression><![CDATA[($F{acquisitions_common_acquisitionmethod}==null || $F{acquisitions_common_acquisitionmethod}.isEmpty())?
+  "":$F{acquisitions_common_acquisitionmethod}.substring(
+     $F{acquisitions_common_acquisitionmethod}.lastIndexOf( ")" )+2,
+       $F{acquisitions_common_acquisitionmethod}.length()-1).replaceAll("[+]"," ")]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Auto" isBlankWhenNull="true">
+				<reportElement x="330" y="0" width="100" height="30" uuid="635ff1da-71db-4847-b09f-126ee11944f9"/>
+				<textFieldExpression><![CDATA[($F{acquisitions_common_acquisitionauthorizer}==null || $F{acquisitions_common_acquisitionauthorizer}.isEmpty())?
+  "":$F{acquisitions_common_acquisitionauthorizer}.substring(
+     $F{acquisitions_common_acquisitionauthorizer}.lastIndexOf( ")" )+2,
+       $F{acquisitions_common_acquisitionauthorizer}.length()-1).replaceAll("[+]"," ")]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Auto" isBlankWhenNull="true">
+				<reportElement x="430" y="0" width="100" height="30" uuid="e9c9ad59-7bed-4172-ae76-6cb1c70610a9"/>
+				<textFieldExpression><![CDATA[$F{acquisitions_common_acquisitionauthorizerdate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="34" height="30" uuid="cfb47e17-592d-4f49-8cc6-58cba92a0937"/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement positionType="FixRelativeToBottom" x="505" y="0" width="50" height="30" uuid="d76090ba-e469-400d-b3df-37884ca70e3a"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="0" width="550" height="1" uuid="439bd6a9-a032-457c-bd42-04de2ef73bde">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+			</line>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="50" splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
+<!-- 2016-04-24T17:41:53 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sample" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5be5b01d-525f-477a-adeb-30d93fa521ff">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="omca-digocean.xml"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="ireport.jasperserver.url" value="http://192.241.245.229:8888/jasperserver/"/>
+	<property name="ireport.jasperserver.user" value="jasperadmin"/>
+	<property name="ireport.jasperserver.report.resource" value="/reports/interactive/OMCA_Valuation_ALL_Demo_files/main_jrxml"/>
+	<property name="ireport.jasperserver.reportUnit" value="/reports/interactive/OMCA_Valuation_ALL_Demo"/>
+	<parameter name="where_clause" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[(($P{csid}==null || ($P{csid}.length()==0))?"":" AND hierarchy.name = '"+$P{csid}+"'")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tenantid" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["35"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="csid" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["3943f8f2-54f3-4400-8687"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+    vcc.valuationcontrolrefnumber valuationcontrolrefnumber,
+    va.valuecurrency valuecurrency,
+    va.valueamount valueamount,
+    vcc.valuetype valuetype,
+    vcc.valuedate valuedate,
+    vcc.valuesource valuesource,
+    vcc.valuenote valuenote,
+    co.objectnumber objectNumber,
+    comca.sortableobjectnumber sort
+
+FROM
+    valuationcontrols_common vcc
+
+    -- valueamount
+    LEFT OUTER JOIN hierarchy h2 ON (vcc.id = h2.parentid AND h2.name='valuationcontrols_common:valueAmountsList')
+    LEFT OUTER JOIN valueamounts va ON (h2.id = va.id)
+
+    -- Get related Cataloging records
+    LEFT OUTER JOIN hierarchy hrel ON (vcc.id = hrel.id)
+    LEFT OUTER JOIN relations_common r1 ON (r1.subjectcsid = hrel.name AND r1.objectdocumenttype = 'CollectionObject')
+    LEFT OUTER JOIN hierarchy hco ON (r1.objectcsid = hco.name)
+    LEFT OUTER JOIN collectionobjects_common co ON (co.id = hco.id)
+    LEFT OUTER JOIN collectionobjects_omca comca ON (co.id = comca.id)
+
+    INNER JOIN misc ON (misc.id = vcc.id AND misc.lifecyclestate <> 'deleted')
+    INNER JOIN collectionspace_core core ON core.id = vcc.id
+
+WHERE core.tenantid = $P{tenantid} AND misc.lifecyclestate != 'deleted'
+
+--$P!{where_clause}
+
+ORDER BY sort, valuedate ASC]]>
+	</queryString>
+	<field name="valuationcontrolrefnumber" class="java.lang.String"/>
+	<field name="valuecurrency" class="java.lang.String"/>
+	<field name="valueamount" class="java.lang.Double"/>
+	<field name="valuetype" class="java.lang.String"/>
+	<field name="valuedate" class="java.sql.Timestamp"/>
+	<field name="valuesource" class="java.lang.String"/>
+	<field name="valuenote" class="java.lang.String"/>
+	<field name="objectnumber" class="java.lang.String"/>
+	<field name="sort" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="4" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="45" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="240" height="20" uuid="dab9bcb1-9640-4154-8507-47dcc095fae3"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[OMCA Valuations report]]></text>
+			</staticText>
+			<textField pattern="HH:mm">
+				<reportElement x="510" y="10" width="40" height="24" uuid="c83b7a3c-b20a-4127-9309-2a2ed66ff61a"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="430" y="10" width="80" height="24" uuid="64f0db6b-ad5c-41fc-97da-931030dd3d40"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="40" width="549" height="1" uuid="be00745f-83ab-4fd1-b1a2-441b017b8444"/>
+			</line>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="32" splitType="Stretch">
+			<staticText>
+				<reportElement x="100" y="0" width="86" height="25" uuid="189b7373-7797-454c-b540-67bd64b52a19">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Bottom"/>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="217" y="0" width="70" height="25" uuid="44756252-9261-4775-8f1c-b0eeaa821c7c">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Bottom"/>
+				<text><![CDATA[Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="287" y="0" width="63" height="25" uuid="171c44be-c3ae-49b7-b11f-ae336cdf7fc2"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Bottom"/>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="350" y="0" width="100" height="25" uuid="a12ed5e0-f676-4e74-9eab-693356957841"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Bottom"/>
+				<text><![CDATA[Source]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="450" y="0" width="100" height="25" uuid="9e9f339d-068e-4c9c-b7fc-811956ac2e3f"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Bottom"/>
+				<text><![CDATA[Note]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="186" y="0" width="31" height="25" uuid="7242797c-69a8-41e9-9924-7f63a7c4d51d"/>
+				<textElement verticalAlignment="Bottom"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="34" y="0" width="66" height="25" uuid="381de2d5-bc94-4d53-b920-d7f0248b1255"/>
+				<textElement verticalAlignment="Bottom"/>
+				<text><![CDATA[Object number]]></text>
+			</staticText>
+			<line>
+				<reportElement x="5" y="28" width="545" height="1" uuid="ff46d179-8208-4693-980a-c9af4127066d"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="40" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="34" height="30" uuid="cfb47e17-592d-4f49-8cc6-58cba92a0937"/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="¤#,##0.##;¤-#,##0.##" isBlankWhenNull="true">
+				<reportElement x="100" y="0" width="86" height="30" uuid="e03c1893-4dce-4365-9c69-9b52a70d061e"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{valueamount}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="217" y="0" width="70" height="30" uuid="e6cc2a9f-4a21-491d-9087-b820f2d5adca">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<box leftPadding="2"/>
+				<textFieldExpression><![CDATA[($F{valuetype}==null || $F{valuetype}.isEmpty())?
+  "":$F{valuetype}.substring(
+     $F{valuetype}.lastIndexOf( ")" )+2,
+       $F{valuetype}.length()-1).replaceAll("[+]"," ")]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="M/d/yy" isBlankWhenNull="true">
+				<reportElement x="287" y="0" width="63" height="30" uuid="aa86f835-9435-4fd2-9aa7-818263bc7742"/>
+				<box leftPadding="2"/>
+				<textFieldExpression><![CDATA[$F{valuedate}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="350" y="0" width="100" height="30" uuid="86172d5a-1245-4328-9406-034a396e311c"/>
+				<box leftPadding="2"/>
+				<textFieldExpression><![CDATA[($F{valuesource}==null || $F{valuesource}.isEmpty())?
+  "":$F{valuesource}.substring(
+     $F{valuesource}.lastIndexOf( ")" )+2,
+       $F{valuesource}.length()-1).replaceAll("[+]"," ")]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="450" y="0" width="100" height="30" uuid="41f59ba6-458f-43ed-990a-d2b5ea2d6cb4"/>
+				<box leftPadding="2"/>
+				<textFieldExpression><![CDATA[$F{valuenote}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="186" y="0" width="31" height="30" uuid="cb6542a7-750b-4ffa-9949-744817b31103"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[($F{valuecurrency}==null || $F{valuecurrency}.isEmpty())?
+  "":$F{valuecurrency}.substring(
+     $F{valuecurrency}.lastIndexOf( "(" )+1,
+       $F{valuecurrency}.lastIndexOf( ")" )).replaceAll("[+]"," ")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="34" y="0" width="66" height="30" uuid="b31e70d4-ab65-453e-b139-fd11f4fa2a0f"/>
+				<textFieldExpression><![CDATA[$F{objectnumber}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement positionType="FixRelativeToBottom" x="460" y="0" width="95" height="20" uuid="d76090ba-e469-400d-b3df-37884ca70e3a"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="0" width="550" height="1" uuid="439bd6a9-a032-457c-bd42-04de2ef73bde">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+			</line>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="50" splitType="Stretch"/>
+	</summary>
+</jasperReport>
