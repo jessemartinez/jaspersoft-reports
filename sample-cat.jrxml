@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-04-24T17:42:20 -->
+<!-- 2016-04-24T20:49:26 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sample" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5be5b01d-525f-477a-adeb-30d93fa521ff">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="omca-digocean.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -28,59 +28,39 @@
 
     --rd.item responsibleDepartment,
     array_to_string(array_agg(DISTINCT substring(rd.item, position(')''' in rd.item)+2, length(rd.item)-position(')''' in rd.item)-2)),', ') AS responsibleDepartment,
-    --array_to_string(array_agg(DISTINCT REGEXP_REPLACE(rd.item, '^.*\)''(.*)''$', '\1')),', ') AS responsibleDepartment,
-    --string_agg(substring(rd.item, position(')''' in rd.item)+2, length(rd.item)-position(')''' in rd.item)-2),', ') AS responsibleDepartment,
 
     --cc.item contentConcept,
     array_to_string(array_agg(DISTINCT substring(cc.item, position(')''' in cc.item)+2, length(cc.item)-position(')''' in cc.item)-2)),', ') AS contentConcept,
-    --array_to_string(array_agg(DISTINCT REGEXP_REPLACE(cc.item, '^.*\)''(.*)''$', '\1')),', ') AS contentConcept,
-    --string_agg(substring(cc.item, position(')''' in cc.item)+2, length(cc.item)-position(')''' in cc.item)-2),', ') AS contentConcept,
 
     --cp.item contentPerson,
     array_to_string(array_agg(DISTINCT substring(cp.item, position(')''' in cp.item)+2, length(cp.item)-position(')''' in cp.item)-2)),', ') AS contentPerson,
-    --array_to_string(array_agg(DISTINCT REGEXP_REPLACE(cp.item, '^.*\)''(.*)''$', '\1')),', ') AS contentPerson,
-    --string_agg(substring(cp.item, position(')''' in cp.item)+2, length(cp.item)-position(')''' in cp.item)-2),', ') AS contentPerson,
 
     --corg.item contentOrganization,
     array_to_string(array_agg(DISTINCT substring(corg.item, position(')''' in corg.item)+2, length(corg.item)-position(')''' in corg.item)-2)),', ') AS contentOrganization,
-    --array_to_string(array_agg(DISTINCT REGEXP_REPLACE(corg.item, '^.*\)''(.*)''$', '\1')),', ') AS contentOrganization,
-    --string_agg(substring(corg.item, position(')''' in corg.item)+2, length(corg.item)-position(')''' in corg.item)-2),', ') AS contentOrganization,
 
     --cpl.item contentPlace,
     array_to_string(array_agg(DISTINCT substring(cpl.item, position(')''' in cpl.item)+2, length(cpl.item)-position(')''' in cpl.item)-2)),', ') AS contentPlace,
-    --array_to_string(array_agg(DISTINCT REGEXP_REPLACE(cpl.item, '^.*\)''(.*)''$', '\1')),', ') AS contentPlace,
-    --string_agg(substring(cpl.item, position(')''' in cpl.item)+2, length(cpl.item)-position(')''' in cpl.item)-2),', ') AS contentPlace,
 
     --tg.title objectTitle,
     array_to_string(array_agg(DISTINCT tg.title),', ') AS objectTitle,
-    --string_agg(tg.title,', ') AS objectTitle,
 
     --sd.datedisplaydate objectProductionDate,
     array_to_string(array_agg(DISTINCT sd.datedisplaydate),', ') AS objectProductionDate,
-    --string_agg(sd.datedisplaydate,', ') AS objectProductionDate,
 
     --mpg.dimensionSummary dimensionSummary,
     array_to_string(array_agg(DISTINCT mpg.dimensionSummary),', ') AS dimensionSummary,
-    --string_agg(mpg.dimensionSummary,', ') AS dimensionSummary,
 
     --oppg.objectProductionPerson maker,
     array_to_string(array_agg(DISTINCT substring(oppg.objectProductionPerson, position(')''' in oppg.objectProductionPerson)+2, length(oppg.objectProductionPerson)-position(')''' in oppg.objectProductionPerson)-2)),', ') AS maker,
-    --array_to_string(array_agg(DISTINCT REGEXP_REPLACE(oppg.objectProductionPerson, '^.*\)''(.*)''$', '\1')),', ') AS maker,
-    --string_agg(substring(oppg.objectProductionPerson, position(')''' in oppg.objectProductionPerson)+2, length(oppg.objectProductionPerson)-position(')''' in oppg.objectProductionPerson)-2),', ') AS maker,
 
     --ong.objectName objectName,
     array_to_string(array_agg(DISTINCT substring(ong.objectName, position(')''' in ong.objectName)+2, length(ong.objectName)-position(')''' in ong.objectName)-2)),', ') AS objectName,
-    --array_to_string(array_agg(DISTINCT REGEXP_REPLACE(ong.objectName, '^.*\)''(.*)''$', '\1')),', ') AS objectName,
-    --string_agg(substring(ong.objectName, position(')''' in ong.objectName)+2, length(ong.objectName)-position(')''' in ong.objectName)-2),', ') AS objectName,
 
     --mg.material material,
     array_to_string(array_agg(DISTINCT substring(mg.material, position(')''' in mg.material)+2, length(mg.material)-position(')''' in mg.material)-2)),', ') AS material,
-    --array_to_string(array_agg(DISTINCT REGEXP_REPLACE(mg.material, '^.*\)''(.*)''$', '\1')),', ') AS material,
-    --string_agg(substring(mg.material, position(')''' in mg.material)+2, length(mg.material)-position(')''' in mg.material)-2),', ') AS material,
     
     comca.argusRemarks argusRemarks,
     comca.sortableobjectnumber sort,
-    --misc.lifecyclestate lifecyclestate,
 
     -- creditline; sortby acquisitionreferencenumber
     (SELECT string_agg(acq.creditline,' ' ORDER BY acq.acquisitionreferencenumber)
@@ -90,6 +70,7 @@
         LEFT OUTER JOIN misc ON (misc.id = acq.id)
         WHERE h1.name = racq.subjectcsid AND racq.objectdocumenttype = 'Acquisition' AND misc.lifecyclestate <> 'deleted'
         GROUP BY acq.acquisitionreferencenumber
+        ORDER BY acq.acquisitionreferencenumber DESC
         LIMIT 1
     ) as creditline
 
@@ -145,7 +126,7 @@ FROM collectionobjects_common co
 
 WHERE core.tenantid = $P{tenantid} AND lifecyclestate != 'deleted'
 
---$P!{where_clause}
+$P!{where_clause}
 
 GROUP BY objectNumber, physicalDescription, argusRemarks, sort, h1.name
 
