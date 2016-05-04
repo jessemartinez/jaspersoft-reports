@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-04-24T20:49:26 -->
+<!-- 2016-05-03T22:23:48 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sample" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5be5b01d-525f-477a-adeb-30d93fa521ff">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="omca-digocean.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -24,7 +24,6 @@
 
     --bd.item briefDescription,
     array_to_string(array_agg(DISTINCT bd.item),', ') AS briefDescription,
-    --string_agg(bd.item,', ') AS briefDescription,
 
     --rd.item responsibleDepartment,
     array_to_string(array_agg(DISTINCT substring(rd.item, position(')''' in rd.item)+2, length(rd.item)-position(')''' in rd.item)-2)),', ') AS responsibleDepartment,
@@ -124,9 +123,7 @@ FROM collectionobjects_common co
     INNER JOIN collectionspace_core core ON core.id = co.id
     INNER JOIN collectionobjects_omca comca ON (co.id = comca.id)
 
-WHERE core.tenantid = $P{tenantid} AND lifecyclestate != 'deleted'
-
-$P!{where_clause}
+WHERE core.tenantid = $P{tenantid}
 
 GROUP BY objectNumber, physicalDescription, argusRemarks, sort, h1.name
 
