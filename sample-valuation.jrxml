@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-05-03T23:58:31 -->
+<!-- 2016-05-04T00:18:16 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sample" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5be5b01d-525f-477a-adeb-30d93fa521ff">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="omca-digocean.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -155,80 +155,88 @@ ORDER BY sort, valuedate ASC]]>
 				<textElement verticalAlignment="Bottom">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Object number]]></text>
+				<text><![CDATA[Object ID]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="33" splitType="Stretch">
+		<band height="26" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<textField>
-				<reportElement x="0" y="0" width="40" height="30" uuid="cfb47e17-592d-4f49-8cc6-58cba92a0937"/>
-				<box topPadding="2">
+				<reportElement x="0" y="0" width="40" height="26" uuid="cfb47e17-592d-4f49-8cc6-58cba92a0937">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box topPadding="2" bottomPadding="2">
 					<topPen lineWidth="1.0" lineColor="#DDDDDD"/>
 				</box>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="¤#,##0.00;¤-#,##0.00" isBlankWhenNull="true">
-				<reportElement x="120" y="0" width="66" height="30" uuid="e03c1893-4dce-4365-9c69-9b52a70d061e"/>
-				<box topPadding="2" leftPadding="2">
+				<reportElement x="120" y="0" width="66" height="26" uuid="e03c1893-4dce-4365-9c69-9b52a70d061e"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2">
 					<topPen lineWidth="1.0" lineColor="#DDDDDD"/>
 				</box>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{valueamount}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="217" y="0" width="70" height="30" uuid="e6cc2a9f-4a21-491d-9087-b820f2d5adca">
+				<reportElement x="217" y="0" width="70" height="26" uuid="e6cc2a9f-4a21-491d-9087-b820f2d5adca">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
-				<box topPadding="2" leftPadding="2">
+				<box topPadding="2" leftPadding="2" bottomPadding="2">
 					<topPen lineWidth="1.0" lineColor="#DDDDDD"/>
 				</box>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[($F{valuetype}==null || $F{valuetype}.isEmpty())?
   "":$F{valuetype}.substring(
      $F{valuetype}.lastIndexOf( ")" )+2,
        $F{valuetype}.length()-1).replaceAll("[+]"," ")]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="M/d/yy" isBlankWhenNull="true">
-				<reportElement x="287" y="0" width="53" height="30" uuid="aa86f835-9435-4fd2-9aa7-818263bc7742"/>
-				<box topPadding="2" leftPadding="2">
+				<reportElement x="287" y="0" width="53" height="26" uuid="aa86f835-9435-4fd2-9aa7-818263bc7742"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2">
 					<topPen lineWidth="1.0" lineColor="#DDDDDD"/>
 				</box>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{valuedate}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="340" y="0" width="100" height="30" uuid="86172d5a-1245-4328-9406-034a396e311c"/>
-				<box topPadding="2" leftPadding="2">
+				<reportElement x="340" y="0" width="100" height="26" uuid="86172d5a-1245-4328-9406-034a396e311c"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2">
 					<topPen lineWidth="1.0" lineColor="#DDDDDD"/>
 				</box>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[($F{valuesource}==null || $F{valuesource}.isEmpty())?
   "":$F{valuesource}.substring(
      $F{valuesource}.lastIndexOf( ")" )+2,
        $F{valuesource}.length()-1).replaceAll("[+]"," ")]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="440" y="0" width="115" height="30" uuid="41f59ba6-458f-43ed-990a-d2b5ea2d6cb4"/>
-				<box topPadding="2" leftPadding="2">
+				<reportElement x="440" y="0" width="115" height="26" uuid="41f59ba6-458f-43ed-990a-d2b5ea2d6cb4"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2">
 					<topPen lineWidth="1.0" lineColor="#DDDDDD"/>
 				</box>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{valuenote}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="186" y="0" width="31" height="30" uuid="cb6542a7-750b-4ffa-9949-744817b31103"/>
-				<box topPadding="2" leftPadding="0">
+				<reportElement x="186" y="0" width="31" height="26" uuid="cb6542a7-750b-4ffa-9949-744817b31103"/>
+				<box topPadding="2" leftPadding="0" bottomPadding="2">
 					<topPen lineWidth="1.0" lineColor="#DDDDDD"/>
 				</box>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[($F{valuecurrency}==null || $F{valuecurrency}.isEmpty())?
   "":$F{valuecurrency}.substring(
      $F{valuecurrency}.lastIndexOf( "(" )+1,
        $F{valuecurrency}.lastIndexOf( ")" )).replaceAll("[+]"," ")]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="40" y="0" width="80" height="30" uuid="b31e70d4-ab65-453e-b139-fd11f4fa2a0f"/>
-				<box topPadding="2" leftPadding="2">
+				<reportElement x="40" y="0" width="80" height="26" uuid="b31e70d4-ab65-453e-b139-fd11f4fa2a0f"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2">
 					<topPen lineWidth="1.0" lineColor="#DDDDDD"/>
 				</box>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{objectnumber}]]></textFieldExpression>
 			</textField>
 		</band>
