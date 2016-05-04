@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-05-03T22:23:48 -->
+<!-- 2016-05-03T22:56:38 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sample" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5be5b01d-525f-477a-adeb-30d93fa521ff">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="omca-digocean.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -214,7 +214,7 @@ ORDER BY sort, objectnumber ASC]]>
 				<textFieldExpression><![CDATA[$F{dimensionsummary}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Opaque" x="-1" y="0" width="22" height="20" backcolor="#DDDDDD" uuid="cadbdbe0-6c33-4f87-81a1-ad194312a0e6">
+				<reportElement mode="Opaque" x="-11" y="0" width="32" height="20" backcolor="#DDDDDD" uuid="cadbdbe0-6c33-4f87-81a1-ad194312a0e6">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<box topPadding="0" leftPadding="0" rightPadding="0">
@@ -474,16 +474,23 @@ ORDER BY sort, objectnumber ASC]]>
 	</columnFooter>
 	<pageFooter>
 		<band height="16" splitType="Stretch">
-			<textField>
-				<reportElement positionType="FixRelativeToBottom" x="518" y="1" width="30" height="14" uuid="d76090ba-e469-400d-b3df-37884ca70e3a"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
 			<line>
 				<reportElement x="-1" y="0" width="550" height="1" uuid="c30890c6-aea0-446e-b77b-6a76110ce423">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 			</line>
+			<textField>
+				<reportElement x="390" y="1" width="100" height="15" uuid="46b8156f-d6fd-4532-8bcc-7d607ebe07eb"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="490" y="1" width="60" height="15" uuid="084df159-7c2b-4012-b122-d37b04df1abe">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[" of " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageFooter>
 	<summary>
