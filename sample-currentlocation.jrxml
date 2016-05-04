@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2016-05-03T22:57:48 -->
+<!-- 2016-05-03T23:58:59 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sample" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5be5b01d-525f-477a-adeb-30d93fa521ff">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="omca-digocean.xml"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -43,7 +43,8 @@ ORDER BY sort ASC]]>
 		<band height="4" splitType="Stretch"/>
 	</title>
 	<pageHeader>
-		<band height="45" splitType="Stretch">
+		<band height="40" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<staticText>
 				<reportElement x="0" y="0" width="240" height="20" uuid="dab9bcb1-9640-4154-8507-47dcc095fae3"/>
 				<textElement>
@@ -52,20 +53,22 @@ ORDER BY sort ASC]]>
 				<text><![CDATA[OMCA Current Location report]]></text>
 			</staticText>
 			<textField pattern="HH:mm">
-				<reportElement x="510" y="10" width="40" height="24" uuid="c83b7a3c-b20a-4127-9309-2a2ed66ff61a"/>
+				<reportElement x="515" y="0" width="40" height="24" uuid="c83b7a3c-b20a-4127-9309-2a2ed66ff61a"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField pattern="MMMMM dd, yyyy">
-				<reportElement x="430" y="10" width="80" height="24" uuid="64f0db6b-ad5c-41fc-97da-931030dd3d40"/>
+				<reportElement x="435" y="0" width="80" height="24" uuid="64f0db6b-ad5c-41fc-97da-931030dd3d40"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="40" width="549" height="1" uuid="be00745f-83ab-4fd1-b1a2-441b017b8444"/>
+				<reportElement x="0" y="39" width="555" height="1" uuid="be00745f-83ab-4fd1-b1a2-441b017b8444">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
 			</line>
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="21" splitType="Stretch">
+		<band height="20" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<staticText>
 				<reportElement mode="Transparent" x="40" y="0" width="160" height="20" backcolor="#FFFFFF" uuid="47ca2500-11ad-4af0-93ed-8308e4fabfb4"/>
@@ -81,7 +84,7 @@ ORDER BY sort ASC]]>
 				<text><![CDATA[Object Identification Number]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="200" y="0" width="344" height="20" uuid="60d12235-f6a7-4619-9504-97c374da8bc2"/>
+				<reportElement x="200" y="0" width="355" height="20" uuid="60d12235-f6a7-4619-9504-97c374da8bc2"/>
 				<box topPadding="0" leftPadding="2" rightPadding="0"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
@@ -122,7 +125,7 @@ ORDER BY sort ASC]]>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="200" y="0" width="344" height="26" uuid="cc532d64-2e4c-4396-9a57-8fb20d78f72d">
+				<reportElement x="200" y="0" width="355" height="26" uuid="cc532d64-2e4c-4396-9a57-8fb20d78f72d">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<box topPadding="0" leftPadding="2" bottomPadding="0">
@@ -141,22 +144,32 @@ ORDER BY sort ASC]]>
 	</columnFooter>
 	<pageFooter>
 		<band height="17" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<line>
-				<reportElement x="-1" y="0" width="550" height="1" uuid="c30890c6-aea0-446e-b77b-6a76110ce423">
+				<reportElement x="0" y="0" width="555" height="1" uuid="c30890c6-aea0-446e-b77b-6a76110ce423">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 			</line>
 			<textField>
-				<reportElement x="390" y="1" width="100" height="15" uuid="64e2cbdd-142d-4232-b19e-d071ec179bbd"/>
+				<reportElement x="395" y="0" width="100" height="16" uuid="64e2cbdd-142d-4232-b19e-d071ec179bbd"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="490" y="0" width="60" height="16" uuid="44223c5c-abe4-41b8-9244-a9746dc20c31">
+				<reportElement x="495" y="0" width="60" height="16" uuid="44223c5c-abe4-41b8-9244-a9746dc20c31">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[" of " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH:mm">
+				<reportElement x="80" y="0" width="40" height="16" uuid="bde1e7e3-0878-4ce3-b2a1-cbfdca77af39"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="0" y="0" width="80" height="16" uuid="9b135370-8720-49b4-ae7c-6b5ecf2295d1"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
