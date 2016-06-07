@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
+<!-- 2016-06-06T20:56:55 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sample" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5be5b01d-525f-477a-adeb-30d93fa521ff">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="ireport.jasperserver.url" value="http://192.241.245.229:8888/jasperserver/"/>
+	<property name="ireport.jasperserver.user" value="jasperadmin"/>
+	<property name="ireport.jasperserver.report.resource" value="/reports/interactive/OMCA_Cataloging_ny_location_DEMO_files/main_jrxml"/>
+	<property name="ireport.jasperserver.reportUnit" value="/reports/interactive/OMCA_Cataloging_ny_location_DEMO"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="omca-digocean.xml"/>
+	<parameter name="where_clause" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[(($P{csid}==null || ($P{csid}.length()==0))?"":" AND hierarchy.name = '"+$P{csid}+"'")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tenantid" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["35"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="csid" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["3943f8f2-54f3-4400-8687"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Search_by_location" class="java.lang.String">
+		<parameterDescription><![CDATA[Enter a location]]></parameterDescription>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+    co.objectnumber objectNumber,
+    co.physicalDescription physicalDescription,
+    co.computedcurrentlocation computedcurrentlocation,
+    
+    --bd.item briefDescription,
+    array_to_string(array_agg(DISTINCT bd.item),', ') AS briefDescription,
+
+    --rd.item responsibleDepartment,
+    array_to_string(array_agg(DISTINCT substring(rd.item, position(')''' in rd.item)+2, length(rd.item)-position(')''' in rd.item)-2)),', ') AS responsibleDepartment,
+
+    --cc.item contentConcept,
+    array_to_string(array_agg(DISTINCT substring(cc.item, position(')''' in cc.item)+2, length(cc.item)-position(')''' in cc.item)-2)),', ') AS contentConcept,
+
+    --cp.item contentPerson,
+    array_to_string(array_agg(DISTINCT substring(cp.item, position(')''' in cp.item)+2, length(cp.item)-position(')''' in cp.item)-2)),', ') AS contentPerson,
+
+    --corg.item contentOrganization,
+    array_to_string(array_agg(DISTINCT substring(corg.item, position(')''' in corg.item)+2, length(corg.item)-position(')''' in corg.item)-2)),', ') AS contentOrganization,
+
+    --cpl.item contentPlace,
+    array_to_string(array_agg(DISTINCT substring(cpl.item, position(')''' in cpl.item)+2, length(cpl.item)-position(')''' in cpl.item)-2)),', ') AS contentPlace,
+
+    --tg.title objectTitle,
+    array_to_string(array_agg(DISTINCT tg.title),', ') AS objectTitle,
+
+    --sd.datedisplaydate objectProductionDate,
+    array_to_string(array_agg(DISTINCT sd.datedisplaydate),', ') AS objectProductionDate,
+
+    --mpg.dimensionSummary dimensionSummary,
+    array_to_string(array_agg(DISTINCT mpg.dimensionSummary),', ') AS dimensionSummary,
+
+    --oppg.objectProductionPerson maker,
+    array_to_string(array_agg(DISTINCT substring(oppg.objectProductionPerson, position(')''' in oppg.objectProductionPerson)+2, length(oppg.objectProductionPerson)-position(')''' in oppg.objectProductionPerson)-2)),', ') AS maker,
+
+    --ong.objectName objectName,
+    array_to_string(array_agg(DISTINCT substring(ong.objectName, position(')''' in ong.objectName)+2, length(ong.objectName)-position(')''' in ong.objectName)-2)),', ') AS objectName,
+
+    --mg.material material,
+    array_to_string(array_agg(DISTINCT substring(mg.material, position(')''' in mg.material)+2, length(mg.material)-position(')''' in mg.material)-2)),', ') AS material,
+    
+    comca.argusRemarks argusRemarks,
+    comca.sortableobjectnumber sort,
+
+    -- creditline; sortby acquisitionreferencenumber
+    (SELECT string_agg(acq.creditline,', ')
+        FROM relations_common racq
+        LEFT OUTER JOIN hierarchy hacq ON (hacq.name = racq.objectcsid)
+        LEFT OUTER JOIN acquisitions_common acq ON (hacq.id = acq.id)
+        LEFT OUTER JOIN misc ON (misc.id = acq.id)
+        WHERE h1.name = racq.subjectcsid AND racq.objectdocumenttype = 'Acquisition' AND misc.lifecyclestate <> 'deleted'
+        GROUP BY acq.acquisitionreferencenumber
+        ORDER BY acq.acquisitionreferencenumber DESC
+        LIMIT 1
+    ) as creditline
+
+FROM collectionobjects_common co
+
+    JOIN hierarchy h1 ON (co.id = h1.id)
+
+    -- briefDescription
+    LEFT OUTER JOIN collectionobjects_common_briefdescriptions bd ON (co.id = bd.id)
+
+    -- responsibleDepartment
+    LEFT OUTER JOIN collectionobjects_common_responsibledepartments rd ON (co.id = rd.id)
+
+    -- contentConcept
+    LEFT OUTER JOIN collectionobjects_common_contentconcepts cc ON (co.id = cc.id)
+
+    -- contentPerson
+    LEFT OUTER JOIN collectionobjects_common_contentpersons cp ON (co.id = cp.id)
+
+    -- contentOrganization
+    LEFT OUTER JOIN collectionobjects_common_contentorganizations corg ON (co.id = corg.id)
+
+    -- contentPlace
+    LEFT OUTER JOIN collectionobjects_common_contentplaces cpl ON (co.id = cpl.id)
+
+    -- objectTitle
+    LEFT OUTER JOIN hierarchy h2 ON (co.id = h2.parentid AND h2.name = 'collectionobjects_common:titleGroupList')
+    LEFT OUTER JOIN titleGroup tg ON (h2.id = tg.id)
+
+    -- objectProductionDate
+    LEFT OUTER JOIN hierarchy h3 ON (co.id = h3.parentid AND h3.name = 'collectionobjects_common:objectProductionDateGroupList')
+    LEFT OUTER JOIN structureddategroup sd ON (h3.id = sd.id)
+
+    -- dimensionSummary
+    LEFT OUTER JOIN hierarchy h4 ON (co.id = h4.parentid AND h4.name = 'collectionobjects_common:measuredPartGroupList')
+    LEFT OUTER JOIN measuredpartgroup mpg ON (h4.id = mpg.id)
+
+    -- maker
+    LEFT OUTER JOIN hierarchy h5 ON (co.id = h5.parentid AND h5.name = 'collectionobjects_common:objectProductionPersonGroupList')
+    LEFT OUTER JOIN objectProductionPersonGroup oppg ON (h5.id = oppg.id)
+
+    -- objectName
+    LEFT OUTER JOIN hierarchy h6 ON (co.id = h6.parentid AND h6.primarytype='objectNameGroup')
+    LEFT OUTER JOIN objectnamegroup ong ON (ong.id=h6.id)
+
+    -- material
+    LEFT OUTER JOIN hierarchy h7 ON (co.id = h7.parentid AND h7.primarytype='materialGroup')
+    LEFT OUTER JOIN materialgroup mg ON (mg.id=h7.id)
+
+    INNER JOIN misc ON (misc.id = co.id AND misc.lifecyclestate <> 'deleted')
+    INNER JOIN collectionspace_core core ON (core.id = co.id)
+    INNER JOIN collectionobjects_omca comca ON (co.id = comca.id)
+
+WHERE computedcurrentlocation ILIKE CONCAT('%', $P{Search_by_location}, '%') AND core.tenantid = $P{tenantid}
+
+GROUP BY objectNumber, physicalDescription, computedcurrentlocation, argusRemarks, sort, h1.name
+
+ORDER BY sort, objectnumber ASC ]]>
+	</queryString>
+	<field name="objectnumber" class="java.lang.String"/>
+	<field name="physicaldescription" class="java.lang.String"/>
+	<field name="computedcurrentlocation" class="java.lang.String"/>
+	<field name="briefdescription" class="java.lang.String"/>
+	<field name="responsibledepartment" class="java.lang.String"/>
+	<field name="contentconcept" class="java.lang.String"/>
+	<field name="contentperson" class="java.lang.String"/>
+	<field name="contentorganization" class="java.lang.String"/>
+	<field name="contentplace" class="java.lang.String"/>
+	<field name="objecttitle" class="java.lang.String"/>
+	<field name="objectproductiondate" class="java.lang.String"/>
+	<field name="dimensionsummary" class="java.lang.String"/>
+	<field name="maker" class="java.lang.String"/>
+	<field name="objectname" class="java.lang.String"/>
+	<field name="material" class="java.lang.String"/>
+	<field name="argusremarks" class="java.lang.String"/>
+	<field name="sort" class="java.lang.String"/>
+	<field name="creditline" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="45" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<staticText>
+				<reportElement x="0" y="0" width="240" height="20" uuid="dab9bcb1-9640-4154-8507-47dcc095fae3"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[OMCA Cataloging report]]></text>
+			</staticText>
+			<textField pattern="HH:mm">
+				<reportElement x="515" y="0" width="40" height="24" uuid="c83b7a3c-b20a-4127-9309-2a2ed66ff61a"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="435" y="0" width="80" height="24" uuid="64f0db6b-ad5c-41fc-97da-931030dd3d40"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="40" width="555" height="1" uuid="be00745f-83ab-4fd1-b1a2-441b017b8444">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="20" width="50" height="14" uuid="ee59361a-dd67-4a66-902c-d1a2b4cf92bf"/>
+				<text><![CDATA[Location:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="50" y="20" width="290" height="14" uuid="5cf3c922-e3a2-4067-9e8f-bd7125977f21"/>
+				<textFieldExpression><![CDATA[($P{Search_by_location}==null || $P{Search_by_location}.isEmpty())? "all locations":$P{Search_by_location}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="182" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<textField isStretchWithOverflow="true" evaluationTime="Auto" isBlankWhenNull="true">
+				<reportElement x="30" y="20" width="105" height="40" uuid="b9533ed6-3c5a-4d2f-9b02-3c2a236a28de">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box topPadding="2" leftPadding="2" bottomPadding="0" rightPadding="2"/>
+				<textFieldExpression><![CDATA[$F{objectnumber}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" evaluationTime="Auto" isBlankWhenNull="true">
+				<reportElement x="135" y="20" width="105" height="40" uuid="127c1a03-f6fb-4605-a827-8060f6d90ee9"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="0" rightPadding="2"/>
+				<textFieldExpression><![CDATA[$F{objecttitle}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" evaluationTime="Auto" isBlankWhenNull="true">
+				<reportElement x="135" y="140" width="140" height="40" uuid="5feb8283-bbd1-478e-a6f7-be28f457bdec">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box topPadding="2" leftPadding="2" bottomPadding="0" rightPadding="2"/>
+				<textFieldExpression><![CDATA[$F{creditline}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" evaluationTime="Auto" isBlankWhenNull="true">
+				<reportElement x="345" y="20" width="105" height="40" uuid="1d90103f-8ed9-425a-9d2a-4fe322ae82f3"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="0" rightPadding="2"/>
+				<textFieldExpression><![CDATA[$F{maker}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" evaluationTime="Auto" isBlankWhenNull="true">
+				<reportElement x="415" y="140" width="140" height="40" uuid="d28eae64-1c8f-4e8d-8347-00a505b9fa90">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box topPadding="2" leftPadding="2" bottomPadding="0" rightPadding="2"/>
+				<textFieldExpression><![CDATA[$F{dimensionsummary}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="-1" y="0" width="32" height="20" backcolor="#DDDDDD" uuid="cadbdbe0-6c33-4f87-81a1-ad194312a0e6">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="0" rightPadding="0">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="30" y="80" width="105" height="40" uuid="d1fb9b98-ca74-48a3-84d8-8ac5a202ab1f">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box topPadding="2" leftPadding="2" bottomPadding="0" rightPadding="2"/>
+				<textFieldExpression><![CDATA[$F{objectproductiondate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="30" y="60" width="105" height="20" backcolor="#DDDDDD" uuid="cc89ab34-5ff0-4db1-9116-025ec7306efe">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Object Prod. Date]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="30" y="140" width="105" height="40" uuid="3a944b4c-08e3-4ca0-874a-b38e86b8b386"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="0" rightPadding="2"/>
+				<textFieldExpression><![CDATA[$F{responsibledepartment}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="30" y="120" width="105" height="20" backcolor="#DDDDDD" uuid="57cb8422-4169-4a4a-8ee2-b88abbc71f06">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Responsible Dept.]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="240" y="20" width="105" height="40" uuid="6df9c120-a9b4-4ef6-b999-7de5de93014a"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="0" rightPadding="2"/>
+				<textFieldExpression><![CDATA[$F{objectname}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="240" y="0" width="105" height="20" backcolor="#DDDDDD" uuid="ce0a6406-8066-40c1-82b7-0cd2faea4b62"/>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Object Name]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="345" y="80" width="105" height="40" uuid="adae3476-f4dd-42c0-93f3-906d253eaecd"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="0" rightPadding="2"/>
+				<textFieldExpression><![CDATA[$F{contentconcept}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="345" y="60" width="105" height="20" backcolor="#DDDDDD" uuid="f68d032f-4595-4091-96a0-41abbe020156"/>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Content Concept]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="450" y="80" width="105" height="40" uuid="61458e1e-2aab-4ab7-a43b-24430b357255"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="0" rightPadding="2"/>
+				<textFieldExpression><![CDATA[$F{contentperson}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="450" y="60" width="105" height="20" backcolor="#DDDDDD" uuid="94412d5d-1ea9-481b-9b99-0cc9dea97bd5"/>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Content Person]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="30" y="0" width="105" height="20" backcolor="#DDDDDD" uuid="47ca2500-11ad-4af0-93ed-8308e4fabfb4"/>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Object ID Number]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="135" y="0" width="105" height="20" backcolor="#DDDDDD" uuid="4f6ee277-d85c-49de-911b-a4dbf3cac98e"/>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Title]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="135" y="120" width="140" height="20" backcolor="#DDDDDD" uuid="b4516cae-dd8f-44a3-a3eb-4a0d1dd56b30">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Credit Line]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="345" y="0" width="105" height="20" backcolor="#DDDDDD" uuid="4978bf85-4f73-4fc7-8d55-52d98a36467c"/>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Maker]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="415" y="120" width="140" height="20" backcolor="#DDDDDD" uuid="75d290fc-c209-4913-9f7f-93d067de5dd1">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dimension Summary]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="135" y="80" width="105" height="40" uuid="6c995666-22b7-48c6-a91d-4727652ad542"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="0" rightPadding="2"/>
+				<textFieldExpression><![CDATA[$F{contentorganization}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="135" y="60" width="105" height="20" backcolor="#DDDDDD" uuid="bc9d9e93-14e1-4ea7-9f05-eeca89ee616e"/>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[content Org.]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="240" y="80" width="105" height="40" uuid="59f3f077-e36e-40c0-b892-736c71c7ea3f"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="0" rightPadding="2"/>
+				<textFieldExpression><![CDATA[$F{contentplace}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="240" y="60" width="105" height="20" backcolor="#DDDDDD" uuid="c8efb8d6-c868-4782-bb3b-3c2fa7cb691c">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Content Place]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="450" y="20" width="105" height="40" uuid="14091887-72b3-4fcd-99d3-df52ec164b26"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="0" rightPadding="2"/>
+				<textFieldExpression><![CDATA[$F{material}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="450" y="0" width="105" height="20" backcolor="#DDDDDD" uuid="4a9275b8-1dab-4dc3-a7e5-58d17873ae96"/>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Material]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="275" y="140" width="140" height="40" uuid="56af33b6-dec4-41ac-9739-941dace3617c">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box topPadding="2" leftPadding="2" bottomPadding="0" rightPadding="2"/>
+				<textFieldExpression><![CDATA[$F{argusremarks}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="275" y="120" width="140" height="20" backcolor="#DDDDDD" uuid="9a02c021-eb57-4bac-8310-1e0be3a92790">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Argus Remarks]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" uuid="c30890c6-aea0-446e-b77b-6a76110ce423">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+			</line>
+			<textField>
+				<reportElement x="395" y="0" width="100" height="16" uuid="46b8156f-d6fd-4532-8bcc-7d607ebe07eb"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="495" y="0" width="60" height="16" uuid="084df159-7c2b-4012-b122-d37b04df1abe">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[" of " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH:mm">
+				<reportElement x="80" y="1" width="40" height="15" uuid="ddb3e791-4861-4d89-9325-b948c39be7f1"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="0" y="1" width="80" height="15" uuid="a9d664bb-3ff8-408e-9fc0-3499b4bd336c"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
